@@ -21,6 +21,15 @@ class UserForm(forms.Form):
         else:
             raise forms.ValidationError(_('This username is already in use.'))
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email:
+            # email field of User model is not unique
+            users = User.objects.filter(email=email)
+            if users:
+                raise forms.ValidationError(_('This email is already in use.'))
+        return email
+
     def save(self, request=None):
         self.user.username = self.cleaned_data.get('username')
         self.user.email = self.cleaned_data.get('email')
