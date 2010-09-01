@@ -144,6 +144,19 @@ def facebook_connect(request, template='socialregistration/facebook.html',
                     context_instance=RequestContext(request))
     return HttpResponseRedirect(_get_next(request))
 
+def facebook_disconnect(request, template='socialregistration/facebook.html',
+                        extra_context=dict()):
+
+    try:
+        profile = FacebookProfile.objects.get(uid=request.facebook.uid)
+    except FacebookProfile.DoesNotExist:
+        return render_to_response(template, extra_context,
+            context_instance=RequestContext(request))
+    else:
+        profile.delete()
+        return HttpResponseRedirect(_get_next(request))
+
+
 def logout(request, redirect_url=None):
     """
     Logs the user out of django. This is only a wrapper around
