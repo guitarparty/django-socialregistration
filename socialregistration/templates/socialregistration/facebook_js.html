@@ -9,7 +9,7 @@
       function handleResponse(response){
           form.submit();
       }
-      FB.login(handleResponse, {perms:{{ facebook_scope }}});
+      FB.login(handleResponse, {perms:'{{ facebook_scope }}'});
   }
 
 </script>
