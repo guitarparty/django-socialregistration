@@ -5,10 +5,11 @@ from socialregistration.utils import _https
 register = template.Library()
 
 FB_LANG = getattr(settings, 'FACEBOOK_LANGUAGE', 'en_US')
+FB_SCOPE = getattr(settings, 'FACEBOOK_SCOPE', '')
 
 @register.inclusion_tag('socialregistration/facebook_js.html')
 def facebook_js():
-    return {'facebook_language': FB_LANG, 'facebook_api_key' : settings.FACEBOOK_API_KEY, 'is_https' : bool(_https())}
+    return {'facebook_scope': FB_SCOPE, 'facebook_language': FB_LANG, 'facebook_api_key' : settings.FACEBOOK_API_KEY, 'is_https' : bool(_https())}
 
 @register.inclusion_tag('socialregistration/facebook_button.html', takes_context=True)
 def facebook_button(context):
