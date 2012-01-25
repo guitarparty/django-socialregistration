@@ -4,13 +4,12 @@ from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
 
 class UserForm(forms.Form):
-    username = forms.RegexField(r'^\w+$', max_length=32, label=_(u'Username'))
-    email = forms.EmailField(required=False, label=_(u'Email'))
-
-    def __init__(self, user, profile, *args, **kwargs):
-        super(UserForm, self).__init__(*args, **kwargs)
-        self.user = user
-        self.profile = profile
+    """
+    Default user creation form. Can be altered with the 
+    `SOCIALREGISTRATION_SETUP_FORM` setting.
+    """
+    username = forms.RegexField(r'^\w+$', max_length=32)
+    email = forms.EmailField(required=False)
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -30,10 +29,10 @@ class UserForm(forms.Form):
                 raise forms.ValidationError(_('This email is already in use.'))
         return email
 
-    def save(self, request=None):
-        self.user.username = self.cleaned_data.get('username')
-        self.user.email = self.cleaned_data.get('email')
-        self.user.save()
-        self.profile.user = self.user
-        self.profile.save()
-        return self.user
+    def save(self, request, user, profile, client):
+        user.username = self.cleaned_data.get('username')
+        user.email = self.cleaned_data.get('email')
+        user.save()
+        profile.user = user
+        profile.save()
+        return user, profile

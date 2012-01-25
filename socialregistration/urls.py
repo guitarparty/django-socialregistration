@@ -1,67 +1,47 @@
-"""
-
-Updated on 19.12.2009
-
-@author: alen, pinda
-"""
 from django.conf import settings
 from django.conf.urls.defaults import *
+from socialregistration.views import Logout, Setup
 
+urlpatterns = patterns('',)
 
-urlpatterns = patterns('',
-    url('^setup/$', 'socialregistration.views.setup',
-        name='socialregistration_setup'),
-
-    url('^logout/$', 'socialregistration.views.logout',
-        name='social_logout'),
-)
-
-# Setup Facebook URLs if there's an API key specified
-if getattr(settings, 'FACEBOOK_API_KEY', None) is not None:
+if 'socialregistration.contrib.openid' in settings.INSTALLED_APPS:
     urlpatterns = urlpatterns + patterns('',
-        url('^facebook/login/$', 'socialregistration.views.facebook_login',
-            name='facebook_login'),
+        url(r'^openid/', include('socialregistration.contrib.openid.urls',
+            namespace='openid')))
 
-        url('^facebook/connect/$', 'socialregistration.views.facebook_connect',
-            name='facebook_connect'),
-
-        url('^facebook/disconnect/$', 'socialregistration.views.facebook_disconnect',
-            name='facebook_disconnect'),
-
-        url('^xd_receiver.htm', 'django.views.generic.simple.direct_to_template',
-            {'template':'socialregistration/xd_receiver.html'},
-            name='facebook_xd_receiver'),
-    )
-
-#Setup Twitter URLs if there's an API key specified
-if getattr(settings, 'TWITTER_CONSUMER_KEY', None) is not None:
+if 'socialregistration.contrib.twitter' in settings.INSTALLED_APPS:
     urlpatterns = urlpatterns + patterns('',
-        url('^twitter/redirect/$', 'socialregistration.views.oauth_redirect',
-            dict(
-                consumer_key=settings.TWITTER_CONSUMER_KEY,
-                secret_key=settings.TWITTER_CONSUMER_SECRET_KEY,
-                request_token_url=settings.TWITTER_REQUEST_TOKEN_URL,
-                access_token_url=settings.TWITTER_ACCESS_TOKEN_URL,
-                authorization_url=settings.TWITTER_AUTHORIZATION_URL,
-                callback_url='twitter_callback'
-            ),
-            name='twitter_redirect'),
+        url(r'^twitter/', include('socialregistration.contrib.twitter.urls',
+            namespace='twitter')))
 
-        url('^twitter/callback/$', 'socialregistration.views.oauth_callback',
-            dict(
-                consumer_key=settings.TWITTER_CONSUMER_KEY,
-                secret_key=settings.TWITTER_CONSUMER_SECRET_KEY,
-                request_token_url=settings.TWITTER_REQUEST_TOKEN_URL,
-                access_token_url=settings.TWITTER_ACCESS_TOKEN_URL,
-                authorization_url=settings.TWITTER_AUTHORIZATION_URL,
-                callback_url='twitter'
-            ),
-            name='twitter_callback'
-        ),
-        url('^twitter/$', 'socialregistration.views.twitter', name='twitter'),
-    )
+if 'socialregistration.contrib.linkedin' in settings.INSTALLED_APPS:
+    urlpatterns = urlpatterns + patterns('',
+        url(r'^linkedin/', include('socialregistration.contrib.linkedin.urls',
+            namespace='linkedin')))
+
+if 'socialregistration.contrib.facebook' in settings.INSTALLED_APPS:
+    urlpatterns = urlpatterns + patterns('',
+        url(r'^facebook/', include('socialregistration.contrib.facebook.urls',
+            namespace='facebook')))
+
+if 'socialregistration.contrib.github' in settings.INSTALLED_APPS:
+    urlpatterns = urlpatterns + patterns('',
+        url(r'^github/', include('socialregistration.contrib.github.urls',
+            namespace='github')))
+
+if 'socialregistration.contrib.foursquare' in settings.INSTALLED_APPS:
+    urlpatterns = urlpatterns + patterns('',
+        url(r'^foursquare/', include('socialregistration.contrib.foursquare.urls',
+            namespace='foursquare')))
+
+if 'socialregistration.contrib.tumblr' in settings.INSTALLED_APPS:
+    urlpatterns = urlpatterns + patterns('',
+        url(r'^tumblr/', include('socialregistration.contrib.tumblr.urls',
+            namespace='tumblr')))
 
 urlpatterns = urlpatterns + patterns('',
-    url('^openid/redirect/$', 'socialregistration.views.openid_redirect', name='openid_redirect'),
-    url('^openid/callback/$', 'socialregistration.views.openid_callback', name='openid_callback')
+    url(r'^setup/$', Setup.as_view(), name='setup'),
+    url(r'^logout/$', Logout.as_view(), name='logout'),
 )
+
+
