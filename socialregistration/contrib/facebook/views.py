@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.views.generic.base import View
 from socialregistration.contrib.facebook.client import Facebook
 from socialregistration.contrib.facebook.models import FacebookProfile
 from socialregistration.views import OAuthRedirect, OAuthCallback, SetupCallback
@@ -21,3 +22,13 @@ class FacebookSetup(SetupCallback):
     
     def get_lookup_kwargs(self, request, client):
         return {'uid': client.get_user_info()['id']}
+
+class FacebookDisconnect(View):
+    def get(self, request):
+        try:
+            fbprofile = FacebookProfile.objects.filter(user=request.user)
+        except FacebookProfile.DoesNotExist:
+            pass
+        else:
+            fbprofile.delete()
+        return HttpResponseRedirect('/')
