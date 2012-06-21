@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.views.generic.base import View
+from django.http import HttpResponseRedirect
 from socialregistration.contrib.facebook.client import Facebook
 from socialregistration.contrib.facebook.models import FacebookProfile
 from socialregistration.views import OAuthRedirect, OAuthCallback, SetupCallback
@@ -31,4 +32,4 @@ class FacebookDisconnect(View):
             pass
         else:
             fbprofile.delete()
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(self.get_next(request))
