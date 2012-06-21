@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from socialregistration.contrib.facebook.client import Facebook
 from socialregistration.contrib.facebook.models import FacebookProfile
 from socialregistration.views import OAuthRedirect, OAuthCallback, SetupCallback
+from socialregistration.mixins import SocialRegistration
 
 class FacebookRedirect(OAuthRedirect):
     client = Facebook
@@ -24,7 +25,7 @@ class FacebookSetup(SetupCallback):
     def get_lookup_kwargs(self, request, client):
         return {'uid': client.get_user_info()['id']}
 
-class FacebookDisconnect(View):
+class FacebookDisconnect(SocialRegistration, View):
     def get(self, request):
         try:
             fbprofile = FacebookProfile.objects.filter(user=request.user)
