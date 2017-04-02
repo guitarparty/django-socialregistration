@@ -3,5 +3,5 @@
 {% if next %}
     <input type="hidden" name="next" value="{{ next }}" />
 {% endif %}
-<input type="image" onclick="this.form.submit();" src="{% if button %}{{ button }}{% else %}http://static.ak.fbcdn.net/images/fbconnect/login-buttons/connect_light_large_long.gif{% endif %}" />
+    <a href="javascript:void(0);" onclick="this.form.submit();">Innskráning með Facebook</a>
 </form>
