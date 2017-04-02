@@ -17,7 +17,9 @@ class Facebook(OAuth2):
     graph = None
     _user_info = None
     
-    
+    def parse_access_token(self, content):
+        return json.loads(content)
+
     def get_callback_url(self):
         if self.is_https():
             return 'https://%s%s' % (Site.objects.get_current().domain,
